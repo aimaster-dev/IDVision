@@ -1,63 +1,135 @@
-# eKYC 
+# IDVision
 
-## Update
-- 7/12/2024: The source code has been rewritten and tested to be compatible with the VGGFace2 model (InceptionResnetV1). However, I have only tested it using Norm L2 for face matching.
+**IDVision** is a desktop application for seamless ID verification and face authentication.  
+It leverages [IDAnalyzer](https://www.idanalyzer.com/) for extracting information from both sides of identity documents, then verifies user authenticity with live facial checks.
 
-----------------------------
+## Features
 
-eKYC (Electronic Know Your Customer) is a project designed to electronically verify the identity of customers. This is an essential system to ensure authenticity and security in online transactions.
+- **Dual-Side ID OCR**: Extracts and matches data from front and back of ID cards.
+- **ID Verification**: Checks document authenticity and expiration using IDAnalyzer API.
+- **Face Verification**: Live webcam face matching with ID photo.
+- **Liveness Detection**: Prevents spoofing using blink, expression, and movement checks.
+- **Modern OOP Python Codebase**: Easy to extend, integrate, or maintain.
 
-![](resources/ekyc.jpg)
+---
 
-eKYC (Electronic Know Your Customer) is an electronic customer identification and verification solution that enables banks to identify customers 100% online, relying on biometric information and artificial intelligence (AI) for customer recognition, without the need for face-to-face interactions as in the current process.
+## Tech Stack
 
-## eKYC flow 
-This README provides an overview of the eKYC (Electronic Know Your Customer) flow, which comprises three main components: Upload Document (ID Card), Face Recognition (Verification), and Liveness Detection.
+- **Python 3.7+**
+- [PyQt5](https://pypi.org/project/PyQt5/): GUI framework
+- [OpenCV](https://opencv.org/): Camera and image processing
+- **IDAnalyzer API**: OCR and ID verification
+- **Torch / Facenet / VGGFace2**: Face recognition
+- Custom liveness modules (blink, face orientation, emotion prediction)
 
-![](resources/flow.jpg)
+---
 
-#### 1. Upload Document (ID Card)
+## Setup
 
-Initially, users are required to upload an image of their ID card. This step is essential for extracting facial information from the ID card photo.
+### 1. Clone the Repo
 
-#### 2. Face Verification
+```sh
+git clone https://github.com/your-org/idvision.git
+cd idvision
+````
 
-Following the document upload, we proceed to verify whether the user matches the individual pictured on the ID card. Here's how we do it:
+### 2. Install Dependencies
 
-- **Step 1 - Still Face Capture**: Users are prompted to maintain a steady face in front of the camera.
+You can use pip (preferably in a virtual environment):
 
-- **Step 2 - Face Matching (Face Verification)**: Our system utilizes advanced facial recognition technology to compare the live image of the user's face with the photo on the ID card.
-
-#### 3. Liveness Detection
-
-To ensure the user's physical presence during the eKYC process and to prevent the use of static images or videos, we implement Liveness Detection. This step involves the following challenges to validate the user's authenticity:
-
-- **Step 3 - Liveness Challenges**: Users are required to perform specific actions or challenges, which may include blinking, smiling, or turning their head.
-
-- **Step 4 - Successful Liveness Verification**: Successful completion of the liveness challenges indicates the user's authenticity, confirming a successful eKYC process.
-
-These combined steps—ID card upload, Face Verification, and Liveness Detection—comprehensively verify the user's identity, enhancing security and reducing the risk of fraudulent attempts.
-
-## Installation
-1. Clone the repository
-```bash
-git clone https://github.com/manhcuong02/eKYC
-cd eKYC
-```
-2. Install the required dependencies
-```bash
+```sh
 pip install -r requirements.txt
 ```
 
-## Usage
-1. Download weights of the [pretrained VGGFace models](https://drive.google.com/drive/folders/1-pEMok04-UqpeCi_yscUcIA6ytvxhvkG?usp=drive_link) from ggdrive, and then add them to the 'verification_models/weights' directory. Download weights and landmarks of the [pretrained liveness detection models](https://drive.google.com/drive/folders/1S6zLU8_Cgode7B7mfJWs9oforfAODaGB?usp=drive_link) from ggdrive, and then add them to the 'liveness_detection/landmarks' directory
+Main dependencies (see `requirements.txt`):
 
-2. Using the PyQt5 Interface:
-```bash
-python3 main.py
+* PyQt5
+* opencv-python
+* torch
+* facenet-pytorch (or your face models)
+* requests
+* python-dotenv
+
+### 3. Configure API Key
+
+Obtain your API key from [IDAnalyzer](https://www.idanalyzer.com/).
+
+Create a `.env` file in your project root:
+
+```
+IDANALYZER_API_KEY=your_api_key_here
+IDANALYZER_REGION=US
 ```
 
-## Results
+### 4. Run the App
 
-> [!Note]
-> Due to concerns about my personal information, I have deleted the video result from my repo
+```sh
+python main.py
+```
+
+---
+
+## Usage
+
+1. **Select ID Images:**
+   Upload both the front and back images of an ID card.
+2. **Extract & Verify:**
+   Click the "Verify" button to extract and display information and status.
+3. **Face Verification:**
+   Proceed to face authentication and liveness checks using your webcam.
+4. **Result:**
+   The app displays the match status and verification result.
+
+---
+
+## Project Structure
+
+```
+idvision/
+├── gui/
+│   ├── page1_idcard.py   # ID card selection & OCR page
+│   ├── page2.py          # Face verification page
+│   ├── page3.py          # Liveness challenge page
+│   └── utils.py
+├── idanalyzer_api.py      # IDAnalyzer API integration class
+├── liveness_detection/
+│   └── ...               # Blink, emotion, orientation detection
+├── verification_models.py # Face verification models
+├── main.py               # Main app entry point
+├── requirements.txt
+└── .env                  # Environment config (not in git)
+```
+
+---
+
+## Customization
+
+* **Switching API Providers:**
+  Update `idanalyzer_api.py` for a different OCR or KYC provider.
+* **Adding Fields:**
+  Extend `_extract_fields` in `idanalyzer_api.py` to extract more data.
+* **Changing GUI:**
+  All screens are in `gui/` as PyQt widgets—extend or restyle as needed.
+
+---
+
+## License
+
+[MIT](LICENSE)
+*This project is provided as-is for demo and integration purposes. Always comply with privacy and legal guidelines in your jurisdiction when handling user ID data.*
+
+---
+
+## Credits
+
+* [IDAnalyzer](https://www.idanalyzer.com/) for the KYC API
+* [PyQt5](https://riverbankcomputing.com/software/pyqt/intro) for GUI
+* [OpenCV](https://opencv.org/) and [Torch](https://pytorch.org/) for face/liveness processing
+
+---
+
+## Contact
+
+For questions or contributions, open an issue or contact the maintainer.
+
+```
