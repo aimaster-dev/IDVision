@@ -5,3 +5,8 @@ weights/
 images/
 landmarks/
 *.ipynb
+liveness_detection/landmarks/
+liveness_detection/emotion_weights.pt
+liveness_detection/shape_predictor_68_face_landmarks.dat
+facenet/data/
+.env
