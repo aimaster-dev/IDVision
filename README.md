@@ -127,9 +127,3 @@ idvision/
 * [OpenCV](https://opencv.org/) and [Torch](https://pytorch.org/) for face/liveness processing
 
 ---
-
-## Contact
-
-For questions or contributions, open an issue or contact the maintainer.
-
-```
